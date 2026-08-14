@@ -15,10 +15,12 @@ const form = document.getElementById('booking-form');
 const status = document.getElementById('form-status');
 const submitButton = form?.querySelector('button[type="submit"]');
 const formNote = form?.querySelector('.form-note');
+const bookingIntro = document.querySelector('.booking-section .booking-copy');
 const arrivalInput = form?.querySelector('input[name="arrival"]');
 const departureInput = form?.querySelector('input[name="departure"]');
 const guestsInput = form?.querySelector('select[name="guests"]');
 
+if (bookingIntro) bookingIntro.textContent = 'Kies je verblijfsdata en aantal gasten. We controleren direct de beschikbaarheid en berekenen de totaalprijs. Daarna betaal je veilig via Stripe.';
 if (submitButton) submitButton.textContent = 'Controleer prijs & betaal';
 if (formNote) formNote.textContent = 'Je ziet eerst de actuele totaalprijs. Daarna ga je veilig door naar Stripe om de boeking te betalen.';
 
