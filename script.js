@@ -11,6 +11,34 @@ nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => 
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
+const campingSection = document.getElementById('camping');
+if (campingSection && !campingSection.querySelector('.camping-photo-gallery')) {
+  const gallery = document.createElement('div');
+  gallery.className = 'container camping-photo-gallery';
+  gallery.innerHTML = `
+    <div class="camping-photo-copy">
+      <p class="eyebrow">Foto's van de camping</p>
+      <h3>Voorzieningen en speelplekken</h3>
+      <p>Een indruk van de snackbar, sport- en speelfaciliteiten, speeltuin, wasserette en het zwembad.</p>
+    </div>
+    <figure class="camping-gallery-image">
+      <img src="camping-galerij.webp" alt="Fotogalerij van de camping met snackbar, sportveld, luchtkussen, speeltuin, wasserette en zwembad" loading="lazy" />
+    </figure>`;
+  campingSection.appendChild(gallery);
+
+  const galleryStyle = document.createElement('style');
+  galleryStyle.textContent = `
+    .camping-photo-gallery{margin-top:56px}
+    .camping-photo-copy{max-width:720px;margin-bottom:24px}
+    .camping-photo-copy h3{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.1;margin:0 0 10px;color:var(--forest-deep)}
+    .camping-photo-copy p:last-child{color:var(--muted);margin-bottom:0}
+    .camping-gallery-image{margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(41,70,56,.12);box-shadow:var(--shadow);background:#fff}
+    .camping-gallery-image img{display:block;width:100%;height:auto}
+    @media(max-width:620px){.camping-photo-gallery{margin-top:40px}.camping-gallery-image{border-radius:16px}}
+  `;
+  document.head.appendChild(galleryStyle);
+}
+
 const form = document.getElementById('booking-form');
 const status = document.getElementById('form-status');
 const submitButton = form?.querySelector('button[type="submit"]');
