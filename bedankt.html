@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Boeking controleren | Boshuisje Veluwezoom</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#294638" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .confirmation-page { min-height: 100vh; background: #f5f2e9; padding: 72px 20px; }
+    .confirmation-card { max-width: 680px; margin: 0 auto; background: #fff; border-radius: 22px; padding: 40px; box-shadow: 0 16px 50px rgba(41,70,56,.12); }
+    .confirmation-card h1 { margin-top: 8px; }
+    .confirmation-state { margin: 24px 0; padding: 18px; border-radius: 14px; background: #eef4ef; }
+    .confirmation-details { display: grid; gap: 10px; margin: 22px 0 30px; }
+    .confirmation-details div { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #e8e4da; padding-bottom: 10px; }
+    .confirmation-details dt { font-weight: 700; }
+    .confirmation-details dd { margin: 0; text-align: right; }
+    .confirmation-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    @media (max-width: 560px) { .confirmation-card { padding: 28px 22px; } .confirmation-details div { display: block; } .confirmation-details dd { text-align: left; margin-top: 4px; } }
+  </style>
+</head>
+<body>
+  <main class="confirmation-page">
+    <section class="confirmation-card" aria-live="polite">
+      <p class="eyebrow">Boshuisje Veluwezoom</p>
+      <h1 id="title">Je betaling wordt gecontroleerd…</h1>
+      <div id="state" class="confirmation-state">Een moment, we controleren je Stripe-betaling en leggen je boeking vast.</div>
+      <dl id="details" class="confirmation-details" hidden></dl>
+      <div class="confirmation-actions">
+        <a class="button button-primary" href="/">Terug naar de website</a>
+        <a class="button button-secondary" href="mailto:aafkedehoek92@hotmail.com">Contact opnemen</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const title = document.getElementById('title');
+    const state = document.getElementById('state');
+    const details = document.getElementById('details');
+
+    const euro = cents => new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(cents / 100);
+    const dateNl = value => {
+      const date = new Date(String(value).slice(0, 10) + 'T00:00:00');
+      return Number.isNaN(date.getTime()) ? String(value) : new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+    };
+
+    function showDetails(data) {
+      details.innerHTML = [
+        ['Boekingsnummer', data.bookingRef],
+        ['Aankomst', dateNl(data.arrival)],
+        ['Vertrek', dateNl(data.departure)],
+        ['Aantal nachten', String(data.nights)],
+        ['Aantal gasten', String(data.guests)],
+        ['Betaald totaal', euro(data.totalCents)]
+      ].map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join('');
+      details.hidden = false;
+    }
+
+    async function confirmBooking() {
+      if (!sessionId) {
+        title.textContent = 'Geen betaalsessie gevonden';
+        state.textContent = 'Open deze pagina via de terugkeerlink na een Stripe-betaling. Heb je wel betaald? Neem dan contact op, dan controleren we de boeking.';
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/confirm-booking?session_id=${encodeURIComponent(sessionId)}`, { cache: 'no-store' });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Controle mislukt.');
+
+        showDetails(data);
+        if (data.paid && data.status === 'paid') {
+          title.textContent = 'Bedankt, je boeking is bevestigd!';
+          state.textContent = 'Je betaling is ontvangen en de gekozen periode is voor jou vastgelegd. Bewaar het boekingsnummer hieronder.';
+        } else {
+          title.textContent = 'Je betaling wordt nog verwerkt';
+          state.textContent = 'De boeking is gevonden, maar Stripe heeft de betaling nog niet als betaald bevestigd. Vernieuw deze pagina over een moment.';
+        }
+      } catch (error) {
+        title.textContent = 'We konden de boeking niet controleren';
+        state.textContent = 'Je betaling kan nog steeds gelukt zijn. Neem contact op en vermeld het e-mailadres waarmee je hebt geboekt.';
+      }
+    }
+
+    confirmBooking();
+  </script>
+</body>
+</html>
