@@ -1,5 +1,5 @@
 const { ensureSchema, expireOldHolds } = require('../lib/db');
-const { differenceInNights } = require('../lib/pricing');
+const { differenceInNights, quote } = require('../lib/pricing');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
@@ -7,6 +7,7 @@ module.exports = async function handler(req, res) {
   try {
     const arrival = String(req.query.arrival || '');
     const departure = String(req.query.departure || '');
+    const guests = Number(req.query.guests || 1);
 
     const nights = differenceInNights(arrival, departure);
     if (!Number.isInteger(nights) || nights < 2) {
@@ -25,7 +26,31 @@ module.exports = async function handler(req, res) {
       LIMIT 1
     `;
 
-    res.status(200).json({ available: rows.length === 0, nights });
+    if (rows.length) {
+      return res.status(200).json({ available: false, nights });
+    }
+
+    const price = quote({ arrival, departure, guests });
+    if (!price.readyForPayment) {
+      return res.status(200).json({
+        available: true,
+        nights,
+        readyForPayment: false,
+        error: price.message
+      });
+    }
+
+    res.status(200).json({
+      available: true,
+      readyForPayment: true,
+      nights: price.nights,
+      lowRateNights: price.lowRateNights,
+      highRateNights: price.highRateNights,
+      accommodationCents: price.accommodationCents,
+      touristTaxCents: price.touristTaxCents,
+      discountCents: price.discountCents,
+      totalCents: price.totalCents
+    });
   } catch (error) {
     console.error('availability', error);
     res.status(400).json({ available: false, error: 'Controleer de gekozen datums.' });
