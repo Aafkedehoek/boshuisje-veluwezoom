@@ -1,0 +1,9 @@
+{
+  "name": "boshuisje-veluwezoom",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "stripe": "^18.5.0"
+  }
+}
