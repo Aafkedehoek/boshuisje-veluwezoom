@@ -20,9 +20,9 @@ const arrivalInput = form?.querySelector('input[name="arrival"]');
 const departureInput = form?.querySelector('input[name="departure"]');
 const guestsInput = form?.querySelector('select[name="guests"]');
 
-if (bookingIntro) bookingIntro.textContent = 'Kies je verblijfsdata en aantal gasten. We controleren direct de beschikbaarheid en berekenen de totaalprijs. Daarna betaal je veilig via Stripe.';
-if (submitButton) submitButton.textContent = 'Controleer prijs & betaal';
-if (formNote) formNote.textContent = 'Je ziet eerst de actuele totaalprijs. Daarna ga je veilig door naar Stripe om de boeking te betalen.';
+if (bookingIntro) bookingIntro.textContent = 'Kies je verblijfsdata en aantal gasten. We controleren direct de beschikbaarheid en berekenen de totaalprijs. Daarna verstuur je de boekingsaanvraag rechtstreeks per e-mail. Na bevestiging ontvang je persoonlijk een betaalverzoek.';
+if (submitButton) submitButton.textContent = 'Boekingsaanvraag versturen';
+if (formNote) formNote.textContent = 'Na klikken opent je e-mailprogramma met alle boekingsgegevens en de berekende prijs. Na onze bevestiging ontvang je een persoonlijk betaalverzoek.';
 
 const euro = cents => new Intl.NumberFormat('nl-NL', {
   style: 'currency',
@@ -80,7 +80,7 @@ async function checkAvailability(showPrompt = true) {
   }
 
   if (!result.readyForPayment) {
-    status.textContent = result.error || 'Voor deze periode kan nog niet automatisch worden afgerekend.';
+    status.textContent = result.error || 'Voor deze periode kan de prijs nog niet automatisch worden berekend.';
     return null;
   }
 
@@ -118,21 +118,29 @@ form?.addEventListener('submit', async (event) => {
     const quote = await checkAvailability(true);
     if (!quote) return;
 
-    status.textContent = `Totaal ${euro(quote.totalCents)}. Stripe Checkout wordt geopend…`;
+    const subject = `Boekingsaanvraag Boshuisje Veluwezoom - ${values.arrival} t/m ${values.departure}`;
+    const body = [
+      'Hallo,',
+      '',
+      'Ik wil graag Boshuisje Veluwezoom boeken.',
+      '',
+      `Naam: ${values.name}`,
+      `E-mail: ${values.email}`,
+      `Aankomst: ${values.arrival}`,
+      `Vertrek: ${values.departure}`,
+      `Aantal nachten: ${quote.nights}`,
+      `Aantal gasten: ${values.guests}`,
+      `Verblijf: ${euro(quote.accommodationCents)}`,
+      `Toeristenbelasting: ${euro(quote.touristTaxCents)}`,
+      quote.discountCents > 0 ? `Weekkorting: -${euro(quote.discountCents)}` : '',
+      `Totaal: ${euro(quote.totalCents)}`,
+      values.message ? `Bericht: ${values.message}` : '',
+      '',
+      'Ik ontvang graag een bevestiging van de boeking en daarna het betaalverzoek.'
+    ].filter(Boolean).join('\n');
 
-    const response = await fetch('/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(values)
-    });
-    const result = await response.json();
-
-    if (!response.ok || !result.url) {
-      status.textContent = result.error || 'De betaling kon niet worden gestart.';
-      return;
-    }
-
-    window.location.href = result.url;
+    status.textContent = `Beschikbaar · totaal ${euro(quote.totalCents)}. Je e-mailprogramma wordt geopend; verstuur de e-mail om je boekingsaanvraag te verzenden.`;
+    window.location.href = `mailto:aafkedehoek92@hotmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   } catch (error) {
     console.error(error);
     status.textContent = 'Er ging iets mis. Probeer het opnieuw.';
