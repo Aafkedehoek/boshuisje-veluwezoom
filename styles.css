@@ -115,6 +115,11 @@ h3 { line-height:1.25; }
 .booking-form label { display:grid; gap:7px; font-size:.86rem; font-weight:800; }
 .booking-form input, .booking-form select, .booking-form textarea { width:100%; border:1px solid var(--line); background:#fff; border-radius:12px; padding:12px 13px; font:inherit; color:var(--ink); }
 .booking-form input:focus, .booking-form select:focus, .booking-form textarea:focus { outline:3px solid rgba(201,169,116,.25); border-color:var(--accent); }
+.booking-form .button-light { width:100%; min-height:56px; background:var(--forest); color:#fff; border:2px solid var(--forest); box-shadow:0 10px 24px rgba(41,70,56,.22); font-size:1rem; }
+.booking-form .button-light:hover { background:var(--forest-deep); border-color:var(--forest-deep); transform:translateY(-1px); }
+.booking-form .button-light:active { transform:translateY(0); box-shadow:0 5px 14px rgba(41,70,56,.2); }
+.booking-form .button-light:focus-visible { outline:3px solid rgba(201,169,116,.45); outline-offset:3px; }
+.booking-form .button-light:disabled { opacity:.65; cursor:not-allowed; transform:none; }
 .form-note { font-size:.8rem; color:var(--muted); margin:0; }
 .form-status { margin:0; font-weight:800; color:var(--forest); }
 .faq-section details { border-bottom:1px solid var(--line); padding:18px 0; }
