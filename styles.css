@@ -91,7 +91,8 @@ h3 { line-height:1.25; }
 .amenities-grid span { font-size:1.7rem; color:var(--forest); display:block; margin-bottom:20px; }
 .amenities-grid h3 { margin:0; }
 .split-grid { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
-.tall-photo { min-height:560px; }
+.tall-photo { min-height:0; }
+.tall-photo img { height:auto; }
 .lead { font-size:1.2rem; color:var(--muted); }
 .text-list { border-top:1px solid var(--line); margin-top:34px; }
 .text-list > div { padding:22px 0; border-bottom:1px solid var(--line); }
@@ -149,7 +150,7 @@ h3 { line-height:1.25; }
   .gallery-grid .photo-large { grid-row:span 1; grid-column:span 2; }
   .practical-grid { grid-template-columns:repeat(2,1fr); }
   .inline-heading { align-items:start; flex-direction:column; gap:0; }
-  .tall-photo { min-height:400px; }
+  .tall-photo { min-height:0; }
   .section { padding:76px 0; }
   .footer-grid { grid-template-columns:1fr 1fr; }
 }
