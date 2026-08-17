@@ -1,3 +1,8 @@
+const extraStyles = document.createElement('link');
+extraStyles.rel = 'stylesheet';
+extraStyles.href = 'extras.css';
+document.head.appendChild(extraStyles);
+
 const menuButton = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.main-nav');
 menuButton?.addEventListener('click', () => {
