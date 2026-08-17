@@ -1,0 +1,129 @@
+.amenities-grid article p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.45;
+}
+
+.booking-links a,
+.form-note a,
+.consent-row a {
+  text-underline-offset: 3px;
+}
+
+.booking-links a {
+  color: #fff;
+  font-weight: 800;
+}
+
+.booking-form .consent-row {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.booking-form .consent-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  padding: 0;
+  accent-color: var(--forest);
+}
+
+.booking-form .consent-row a {
+  color: var(--forest);
+}
+
+.legal-page {
+  background: var(--cream);
+}
+
+.legal-back {
+  text-decoration: none;
+  font-weight: 800;
+  color: var(--forest);
+}
+
+.legal-main {
+  padding: 76px 0 96px;
+}
+
+.legal-container {
+  width: min(820px, calc(100% - 40px));
+}
+
+.legal-container > h1 {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  max-width: 760px;
+}
+
+.legal-updated {
+  color: var(--muted);
+  margin: -8px 0 38px;
+}
+
+.legal-card {
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+}
+
+.legal-card:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.legal-card h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  letter-spacing: -.02em;
+  margin-bottom: 10px;
+}
+
+.legal-card p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-card a {
+  color: var(--forest);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.legal-list {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.legal-list li + li {
+  margin-top: 7px;
+}
+
+.legal-note {
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+.legal-footer {
+  padding-top: 24px;
+}
+
+.legal-footer-bottom {
+  margin-top: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.site-footer a {
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 620px) {
+  .legal-main { padding: 52px 0 76px; }
+  .legal-container { width: min(100% - 28px, 820px); }
+  .legal-back { font-size: .86rem; }
+  .legal-card { padding: 23px 0; }
+}
